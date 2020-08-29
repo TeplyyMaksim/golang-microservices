@@ -6,13 +6,24 @@ import (
 	"net/http"
 )
 
+type userDao struct {}
+
 var (
 	users = map[int64] *User {
 		123: &User { Id: 123, FirstName: "Maksym", LastName: "Teplyy", Email: "maksym@mailinator.com" },
 	}
+	UserDao userServiceInterface
 )
 
-func GetUser(userId int64) (*User, *utils.ApplicationError) {
+func init () {
+	UserDao = &userDao{}
+}
+
+type userServiceInterface interface {
+	GetUser(int64) (*User, *utils.ApplicationError )
+}
+
+func (u *userDao) GetUser(userId int64) (*User, *utils.ApplicationError) {
 	if user := users[userId]; user != nil {
 		return user, nil
 	}
