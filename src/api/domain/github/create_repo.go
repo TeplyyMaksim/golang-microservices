@@ -1,6 +1,6 @@
 package github
 
-type CreateRepoRequestData struct {
+type CreateRepoRequest struct {
 	Name 		string 	`json:"name"`
 	Description string	`json:"description"`
 	Homepage 	string 	`json:"homepage"`
@@ -10,7 +10,7 @@ type CreateRepoRequestData struct {
 	HasWiki		bool 	`json:"has_wiki"`
 }
 
-type CreateRepoResponseData struct {
+type CreateRepoResponse struct {
 	Id 			int64 			`json:"id"`
 	Name 		string			`json:"name"`
 	FullName	string 			`json:"full_name"`

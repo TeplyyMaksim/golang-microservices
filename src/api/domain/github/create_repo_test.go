@@ -8,7 +8,7 @@ import (
 
 // TestCreateRepoRequestAsJSON tests converting CreateRepoRequest to and from json properly
 func TestCreateRepoRequestAsJSON(t *testing.T) {
-	request := CreateRepoRequestData{
+	request := CreateRepoRequest{
 		Name:        	"golang introduction",
 		Description: 	"a golang introduction repository",
 		Homepage:    	"https://github.com",
@@ -22,7 +22,7 @@ func TestCreateRepoRequestAsJSON(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, bytes)
 
-	var target CreateRepoRequestData
+	var target CreateRepoRequest
 	err = json.Unmarshal(bytes, &target)
 	assert.Nil(t, err)
 	assert.EqualValues(t, target.Name, request.Name)
