@@ -1,6 +1,10 @@
 package errors
 
-import "net/http"
+import (
+	"encoding/json"
+	"errors"
+	"net/http"
+)
 
 type ApiError interface {
 	Status() 	int
@@ -9,7 +13,7 @@ type ApiError interface {
 }
 
 type apiError struct {
-	AStatus 		int			`json:"status"`
+	AStatus 	int			`json:"status"`
 	AMessage 	string		`json:"message"`
 	AError		string		`json:"error,omitempty"`
 }
@@ -31,6 +35,16 @@ func NewApiError(statusCode int, message string) ApiError {
 		AStatus:  statusCode,
 		AMessage: message,
 	}
+}
+
+func NewApiErrorFromBytes(body []byte) (ApiError, error) {
+	var result apiError
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, errors.New("invalid json body")
+	}
+
+	return &result, nil
 }
 
 func NewNotFoundApiError(message string) ApiError {
