@@ -61,7 +61,7 @@ func NewInternalServerError (message string) ApiError {
 	}
 }
 
-func NewBedRequestError (message string) ApiError {
+func NewBadRequestError (message string) ApiError {
 	return &apiError{
 		AStatus: http.StatusBadRequest,
 		AMessage: message,

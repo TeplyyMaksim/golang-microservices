@@ -14,7 +14,7 @@ func (r *CreateRepoRequest) Validate() errors.ApiError {
 	r.Name = strings.TrimSpace(r.Name)
 
 	if r.Name == "" {
-		return errors.NewBedRequestError("Invalid repository name")
+		return errors.NewBadRequestError("Invalid repository name")
 	}
 
 	return nil

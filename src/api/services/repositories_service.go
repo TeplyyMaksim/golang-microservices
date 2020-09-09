@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/config"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/domain/github"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/domain/repositories"
@@ -38,8 +37,6 @@ func (s *repoService) CreateRepo(input repositories.CreateRepoRequest) (*reposit
 		Description: input.Description,
 		Private:     true,
 	}
-
-	fmt.Println(request)
 
 	response, err := github_provider.CreateRepo(config.GetGithubAccessToken(), request)
 
@@ -99,7 +96,6 @@ func (s *repoService) handleRepoResults(wg *sync.WaitGroup,input chan repositori
 	var results repositories.CreateReposResponse
 
 	for incomingEvent := range input {
-		fmt.Println(incomingEvent.Response, incomingEvent.Error)
 		repoResult := repositories.CreateRepositoriesResult {
 			Response: incomingEvent.Response,
 			Error: incomingEvent.Error,
@@ -119,7 +115,6 @@ func (s *repoService) createRepoConcurrent(input repositories.CreateRepoRequest,
 	}
 
 	result, err := s.CreateRepo(input)
-	fmt.Println(result)
 
 	if err != nil {
 		output <- repositories.CreateRepositoriesResult{Error:    err}

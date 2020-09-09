@@ -23,7 +23,6 @@ func CreateRepo(accessToken string, request github.CreateRepoRequest) (*github.C
 	headers := http.Header{}
 	headers.Set(headerAuthorization, getAuthorizationHeader(accessToken))
 	response, err := rest_client.Post(urlCreateRepo, request, headers)
-	fmt.Println("response", response)
 	// Error while sending request
 	if err != nil {
 		return nil, &github.ErrorResponse{
