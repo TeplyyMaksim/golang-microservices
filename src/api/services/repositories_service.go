@@ -1,9 +1,11 @@
 package services
 
 import (
+	"fmt"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/config"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/domain/github"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/domain/repositories"
+	"github.com/TeplyyMaksim/golang-microservices/src/api/log"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/providers/github_provider"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/utils/errors"
 	"net/http"
@@ -15,7 +17,7 @@ type repoService struct {
 }
 
 type repoServiceInterface interface {
-	CreateRepo(repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError)
+	CreateRepo(clientId string, input repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError)
 	CreateRepos([]repositories.CreateRepoRequest) (repositories.CreateReposResponse, errors.ApiError)
 }
 
@@ -27,7 +29,7 @@ func init()  {
 	RepositoryService = &repoService{}
 }
 
-func (s *repoService) CreateRepo(input repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError) {
+func (s *repoService) CreateRepo(clientId string, input repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError) {
 	if err := input.Validate(); err != nil {
 		return nil, err
 	}
@@ -37,15 +39,18 @@ func (s *repoService) CreateRepo(input repositories.CreateRepoRequest) (*reposit
 		Description: input.Description,
 		Private:     true,
 	}
+	log.Info("about to send request to external api", fmt.Sprintf("client_id:%s", clientId), "status:pending")
 
 	response, err := github_provider.CreateRepo(config.GetGithubAccessToken(), request)
 
 	if err != nil {
+		log.Error("about to send request to external api", err, fmt.Sprintf("client_id:%s", clientId), "status:error")
 		apiErr := errors.NewApiError(err.StatusCode, err.Message)
 
 		return nil, apiErr
 	}
 
+	log.Info("response obtained from external api", fmt.Sprintf("client_id:%s", clientId), "status:success")
 	result := repositories.CreateRepoResponse{
 		Id: response.Id,
 		Name: response.Name,
