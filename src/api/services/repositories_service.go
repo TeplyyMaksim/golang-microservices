@@ -5,7 +5,8 @@ import (
 	"github.com/TeplyyMaksim/golang-microservices/src/api/config"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/domain/github"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/domain/repositories"
-	"github.com/TeplyyMaksim/golang-microservices/src/api/log"
+	"github.com/TeplyyMaksim/golang-microservices/src/api/log/option_a"
+	"github.com/TeplyyMaksim/golang-microservices/src/api/log/option_b"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/providers/github_provider"
 	"github.com/TeplyyMaksim/golang-microservices/src/api/utils/errors"
 	"net/http"
@@ -39,18 +40,18 @@ func (s *repoService) CreateRepo(clientId string, input repositories.CreateRepoR
 		Description: input.Description,
 		Private:     true,
 	}
-	log.Info("about to send request to external api", fmt.Sprintf("client_id:%s", clientId), "status:pending")
+	option_b.Info("about to send request to external api", fmt.Sprintf("client_id:%s", clientId), "status:pending")
 
 	response, err := github_provider.CreateRepo(config.GetGithubAccessToken(), request)
 
 	if err != nil {
-		log.Error("about to send request to external api", err, fmt.Sprintf("client_id:%s", clientId), "status:error")
+		option_b.Error("about to send request to external api", err, option_b.Field("client_id", clientId), "status:error")
 		apiErr := errors.NewApiError(err.StatusCode, err.Message)
 
 		return nil, apiErr
 	}
 
-	log.Info("response obtained from external api", fmt.Sprintf("client_id:%s", clientId), "status:success")
+	option_b.Info("response obtained from external api", option_b.Field("client_id", clientId), "status:success")
 	result := repositories.CreateRepoResponse{
 		Id: response.Id,
 		Name: response.Name,
